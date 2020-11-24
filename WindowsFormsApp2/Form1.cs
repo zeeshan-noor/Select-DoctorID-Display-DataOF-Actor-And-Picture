@@ -30,7 +30,7 @@ namespace WindowsFormsApp2
             con.Open();
             cmd = con.CreateCommand();
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "Select ACTOR from DOCTOR order by ACTOR asc ";
+            cmd.CommandText = "Select DOCTORID from DOCTOR order by DOCTORID asc ";
             cmd.ExecuteNonQuery();
 
             DataTable dt = new DataTable();
@@ -38,7 +38,7 @@ namespace WindowsFormsApp2
             da.Fill(dt);
             foreach(DataRow dr in dt.Rows)
             {
-                comboBox1.Items.Add(dr["ACTOR"].ToString());
+                comboBox1.Items.Add(dr["DOCTORID"].ToString());
             }
             con.Close();
         }
@@ -46,7 +46,7 @@ namespace WindowsFormsApp2
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             SqlConnection sqlcon = new SqlConnection(@"Data Source=DESKTOP-M7U802R\SQLEXPRESS;Initial Catalog=COMP_LAB5;Integrated Security=True");
-            string sql = "select PICTURE from DOCTOR where ACTOR='" + comboBox1.Text + "'";
+            string sql = "select PICTURE from DOCTOR where DOCTORID='" + comboBox1.Text + "'";
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
 
@@ -63,26 +63,25 @@ namespace WindowsFormsApp2
 
             SqlCommand cmd2 = sqlcon.CreateCommand();
             cmd2.CommandType = CommandType.Text;
-            cmd2.CommandText = "select *from DOCTOR,EPISODE where ACTOR ='" + comboBox1.Text + "'";
+            cmd2.CommandText = "select *from DOCTOR where DOCTORID ='" + comboBox1.Text + "'";
             cmd2.ExecuteNonQuery();
             DataTable dt = new DataTable();
             SqlDataAdapter da1 = new SqlDataAdapter(cmd2);
             da1.Fill(dt);
             foreach(DataRow dr in dt.Rows)
             {
-                textBox3.Text = dr["DOCTORID"].ToString();
+                textBox1.Text = dr["ACTOR"].ToString();
         
-                textBox1.Text = dr["SERIES"].ToString();
+                textBox3.Text = dr["SERIES"].ToString();
                 textBox4.Text = dr["AGE"].ToString();
-                textBox5.Text = dr["TITLE"].ToString();
-
+                listBox2.Items.Add("SERIES" + dr["SERIES"].ToString());
 
             }
 
 
             SqlCommand cmd3 = sqlcon.CreateCommand();
             cmd3.CommandType = CommandType.Text;
-            cmd3.CommandText = "select *from EPISODE where SEASON ='" + textBox3.Text + "'";
+            cmd3.CommandText = "select *from EPISODE where SEASON ='" + comboBox1.Text + "'";
             cmd3.ExecuteNonQuery();
             DataTable dt1 = new DataTable();
             SqlDataAdapter da11 = new SqlDataAdapter(cmd3);
@@ -97,33 +96,26 @@ namespace WindowsFormsApp2
 
             }
 
+            SqlCommand cmd4 = sqlcon.CreateCommand();
+            cmd4.CommandType = CommandType.Text;
+            cmd4.CommandText = "select ACTOR,NAME from COMPANION where DOCTORID ='" + comboBox1.Text + "'";
+            cmd4.ExecuteNonQuery();
+            DataTable  dt4 = new DataTable();
+            SqlDataAdapter da4 = new SqlDataAdapter(cmd4);
+            da1.Fill(dt4);
+            foreach (DataRow dr in  dt4.Rows)
+            {
+               
+                listBox2.Items.Add("NAME:"+dr["ACTOR"].ToString());
 
+            }
         }
-        //    public void FillComboBox()
-        //{
-        //    SqlConnection sqlcon = new SqlConnection(@"Data Source=DESKTOP-M7U802R\SQLEXPRESS;Initial Catalog=COMP_LAB5;Integrated Security=True");
-        //    string sql = "select * from DOCTOR ";
-        //    SqlCommand cmd1 = new SqlCommand(sql,sqlcon);
-        //    SqlDataReader myreader;
-        //    try
-        //    {
-        //        sqlcon.Open();
-        //        myreader = cmd1.ExecuteReader();
-        //        while (myreader.Read())
-        //        {
-        //            string abc = myreader.GetString(1);
-        //            comboBox1.Items.Add(abc);
-        //        }
-        //        sqlcon.Close();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //    }
-        //}
 
-
-
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Application.ExitThread();
+        }
+       
 
     }
 }
